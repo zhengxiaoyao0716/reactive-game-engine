@@ -1,0 +1,101 @@
+{
+  "name": "rge",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "carlo": "^0.9.43",
+    "pixi.js": "^4.8.6",
+    "qrcode": "^1.3.3",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.8"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "launch": "babel-node ./src/main/index.js",
+    "pack": "nexe -i ./build/main -o ./dist/rge -r \"build/**\" -t win-x86",
+    "prepack": "yarn build",
+    "build": "babel --minified src/main -o build/main.js",
+    "prebuild": "react-scripts build"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-flow": "^7.0.0",
+    "nexe": "^3.0.0-beta.15"
+  },
+  "eslintConfig": {
+    "extends": "react-app",
+    "rules": {
+      "no-new-func": "error",
+      "no-extend-native": "error",
+      "comma-dangle": [
+        "error",
+        "always-multiline"
+      ],
+      "eol-last": "error",
+      "prefer-template": "error",
+      "semi": "error",
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "no-dupe-keys": "error",
+      "no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_",
+          "argsIgnorePattern": "^_"
+        }
+      ],
+      "no-duplicate-imports": "error",
+      "no-warning-comments": [
+        "warn",
+        {
+          "terms": [
+            "todo",
+            "fixme"
+          ],
+          "location": "start"
+        }
+      ],
+      "curly": [
+        "error",
+        "multi-line"
+      ],
+      "no-console": "warn",
+      "flowtype/delimiter-dangle": [
+        "error",
+        "always-multiline"
+      ],
+      "flowtype/no-dupe-keys": "error",
+      "flowtype/no-primitive-constructor-types": "error",
+      "flowtype/no-types-missing-file-annotation": "off",
+      "flowtype/type-id-match": [
+        "error",
+        "^[A-Z]|_(.*)+$"
+      ]
+    }
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "8"
+          }
+        }
+      ],
+      "@babel/preset-flow"
+    ]
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
