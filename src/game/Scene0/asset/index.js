@@ -3,8 +3,7 @@ import { UseResourceLoader } from '../../../pixi';
 
 export const images = {
     bg: require('./bg.jpg'),
-    boatOdd: require('./boat.png'),
-    boatEven: require('./boat.png'),
+    boat: require('./boat.png'),
     plane: require('./plane.png'),
 };
 

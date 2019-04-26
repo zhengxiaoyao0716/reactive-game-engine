@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useEffect, useCallback } from 'react';
+import React, {  useMemo, useEffect, useCallback } from 'react';
 import { useResource, Sprite, Gradient } from '../../pixi';
 import { Progress } from '../../pixi/Progress';
 import Loading from '../Loading';
@@ -37,7 +37,7 @@ const Scene0 = () => {
             <Sprite texture={texture('bg')} />
             <>
                 {boats.map(({ position: [x, y] }, index) => (
-                    <Sprite key={index} texture={texture(index % 2 ? 'boatEven' : 'boatOdd')} position={{ x, y }} />
+                    <Sprite key={index} texture={texture(index % 2 ? 'boat' : 'boat')} position={{ x, y }} />
                 ))}
             </>
             <UI className="SeatMembers" scaleMode={true}>

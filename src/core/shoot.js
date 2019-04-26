@@ -1,7 +1,7 @@
 import { Member, divideGroup } from './member';
 import { Subject, from, interval } from 'rxjs';
 import { shuffle } from '../util/collection';
-import { zip, delay, scan, map } from 'rxjs/operators';
+import { zip, delay, scan } from 'rxjs/operators';
 
 export const boats: { position: [number, number] }[] = new Array(8).fill().map((_, index) => ({
     position: [30, 27.5 + index * 130],
