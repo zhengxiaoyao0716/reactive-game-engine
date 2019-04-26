@@ -1,0 +1,15 @@
+.SeatMembers .member {
+    position: absolute;
+    white-space: nowrap;
+    color: #fff;
+    font-size: 36px;
+    font-weight: bold;
+    text-shadow: 3px 3px 03px #000;
+}
+.SeatMembers .member>img {
+    position: absolute;
+    max-width: 150px;
+    left: -20px;
+    top: -35px;
+    z-index: -1;
+}

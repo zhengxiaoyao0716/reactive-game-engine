@@ -11,4 +11,5 @@ export namespace $Types {
     export type index<O, K extends keyof O> = O[K];
     export type element<A extends any[]> = A[number];
     export type isIndexAt<O, K extends keyof O> = (o: O) => o is $Types.index<O, K>;
+    export type applyThenIndex<T extends Function, K extends key<ReturnType<T>>> = (...args: Parameters<T>) => index<ReturnType<T>, K>;
 }
