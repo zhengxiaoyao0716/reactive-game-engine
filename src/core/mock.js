@@ -1,4 +1,4 @@
-import { $Types } from '../util/@types';
+import { $Types } from './@types';
 import { interval } from 'rxjs';
 import { map, takeWhile } from 'rxjs/operators';
 import { subject } from '.';

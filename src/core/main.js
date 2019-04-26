@@ -1,6 +1,6 @@
 /** server side only! */
 
-import { $Types } from './../util/@types';
+import { $Types } from './@types';
 import { mock, Core, EventArgs } from '.';
 
 if (typeof window !== 'undefined') throw new Error('`core/main` should be used in server side only!');

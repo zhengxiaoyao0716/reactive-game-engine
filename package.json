@@ -15,9 +15,11 @@
     "start": "react-scripts start",
     "launch": "babel-node ./src/main/index.js",
     "pack": "nexe -i ./build/main -o ./dist/rge -r \"build/**\" -t win-x86",
-    "prepack": "yarn build",
-    "build": "babel --minified src/main -o build/main.js",
-    "prebuild": "react-scripts build"
+    "prepack": "yarn run build-main",
+    "build-main": "babel --minified src/main -d build/main",
+    "prebuild-main": "yarn run build-core",
+    "build-core": "babel --minified src/core -d build/core",
+    "prebuild-core": "react-scripts build"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",

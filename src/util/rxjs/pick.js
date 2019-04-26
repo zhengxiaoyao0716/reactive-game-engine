@@ -1,4 +1,4 @@
-import { $Types } from '../@types';
+import { $Types } from '../../core/@types';
 import { OperatorFunction, Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 

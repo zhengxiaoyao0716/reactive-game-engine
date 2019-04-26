@@ -2,7 +2,7 @@ import React, { ReactNode, useRef, useMemo } from 'react';
 import { Application, ApplicationOptions } from 'pixi.js';
 import { LoaderContext, RendererContext, StageContext, TickerContext } from '.';
 import { useCloseable } from './useCloseable';
-import { $Props } from '../util/@types';
+import { $Props } from '../core/@types';
 
 interface Props {
     id?: string, className?: string;

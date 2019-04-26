@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect } from 'react';
 import { Texture, AnimatedSpriteTextureTimeObject, extras } from 'pixi.js';
 import { useCloseable } from '../useCloseable';
 import { useContainer } from '..';
-import { $Props } from '../../util/@types';
+import { $Props } from '../../core/@types';
 import { SpriteContext } from '.';
 
 export interface AnimatedSpriteProps {

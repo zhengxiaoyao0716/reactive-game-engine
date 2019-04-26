@@ -4,12 +4,18 @@ import path from 'path';
 import fs from 'fs';
 import util from 'util';
 import carlo from 'carlo';
-import parseArgs from '../util/parseArgs';
 import core, { subject } from '../core/main';
 
 const buildDir = path.resolve(__dirname, '../../build');
 const fsReadFile = util.promisify(fs.readFile);
 
+const parseArgs = (argv: string[]) => argv.reduce((args, arg, index) => {
+  if (!arg.startsWith('-')) return args;
+  const key = arg.slice(arg.startsWith('--') ? 2 : 1);
+  const next = argv[index + 1] || '-end';
+  if (next.startsWith('-')) return { ...args, [key]: true };
+  return { ...args, [key]: next };
+}, {});
 const args: { dev?: boolean } = parseArgs(process.argv);
 
 const loadPage = args.dev ? 'http://localhost:3000' : '/';

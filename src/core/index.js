@@ -1,6 +1,6 @@
 /** Logic */
 
-import { $Types } from '../util/@types';
+import { $Types } from './@types';
 import { Subject } from 'rxjs';
 import { Data, mock } from './mock';
 
