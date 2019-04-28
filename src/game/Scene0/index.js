@@ -1,4 +1,4 @@
-import React, {  useMemo, useEffect, useCallback } from 'react';
+import React, { useMemo, useEffect, useCallback } from 'react';
 import { useResource, Sprite, Gradient } from '../../pixi';
 import { Progress } from '../../pixi/Progress';
 import Loading from '../Loading';
@@ -34,19 +34,20 @@ const Scene0 = () => {
 
     return (
         <Progress completed={resource} indicator={Loading}>
-            <Sprite texture={texture('bg')} />
-            <>
-                {boats.map(({ position: [x, y] }, index) => (
-                    <Sprite key={index} texture={texture(index % 2 ? 'boat' : 'boat')} position={{ x, y }} />
-                ))}
-            </>
-            <UI className="SeatMembers" scaleMode={true}>
+            <UI className="Scene0" scaleMode={true}>
+                <Sprite texture={texture('bg')} />
+                <>
+                    {boats.map(({ position: [x, y] }, index) => (
+                        <Sprite key={index} texture={texture(index % 2 ? 'boat' : 'boat')} position={{ x, y }}>
+                            <span className="boatName" style={{ top: y }}>{`${1 + index}队`}</span>
+                        </Sprite>
+                    ))}
+                </>
                 {seated.filter(member => member != null).map(({ name, position: [left, top] }) => (
                     <span className="member" key={name} style={{ left, top }}>{name}</span>
                 ))}
                 {moving.filter(member => member != null).map(({ name, position, vertex, bezier, gravity }) => (
-                    <MovingMember key={name} name={name} angle={position[3]} position={vertex} velocity={bezier} gravity={gravity}>
-                    </MovingMember>
+                    <MovingMember key={name} name={name} angle={position[3]} position={vertex} velocity={bezier} gravity={gravity} />
                 ))}
             </UI>
         </Progress>
@@ -65,7 +66,7 @@ interface MovingMemberProps {
 const MovingMember = ({ name, angle, position, velocity, gravity }: MovingMemberProps) => (
     <Gradient {...Gradient.Velocity({ position, velocity, gravity })}>{({ position: [left, top, progress, rotate] }) => (
         <div className="member" style={{ left, top, transform: `scale(${1 + (1 - progress) * 2})` }}>
-            <img src={images.plane} alt={name} style={{ transform: `rotate(${angle + 0.05 * Math.sin(rotate * Math.PI)}turn)` }} />
+            <img src={images.plane} alt={name} style={{ transform: `rotate(${angle + rotate / 20}turn)` }} />
             {name && <span>{name}</span>}
         </div>
     )}</Gradient>

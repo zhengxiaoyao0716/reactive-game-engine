@@ -8,7 +8,7 @@ export const boats: { position: [number, number] }[] = new Array(8).fill().map((
 }));
 
 const seats: { position: [number, number] }[] = new Array(20).fill().map((_, index) => ({
-    position: [150 + 140 * (index % 10), (index / 10 | 0) === 0 ? 0 : 60],
+    position: [150 + 140 * (index % 10), (index / 10 | 0) === 0 ? 10 : 60],
 }));
 
 export const calcPosition = (boat: number, seat: number) => {
@@ -35,7 +35,7 @@ export type MovingMember = {
  * @param {number} turn 转向次数，队员路径顶点数.
  * @param {number} swing 摇摆力度
  */
-export const shootMember = (groups: ReturnType<typeof divideGroup>, freq = 1, turn = 3, swing = 1) => {
+export const shootMember = (groups: ReturnType<typeof divideGroup>, freq = 1.5, turn = 3, swing = 1) => {
     const seated: Subject<SeatedMember> = new Subject()
         .pipe(delay(turn * freq * 1000));
     const moving: Subject<MovingMember[]> = new Subject()
@@ -46,7 +46,7 @@ export const shootMember = (groups: ReturnType<typeof divideGroup>, freq = 1, tu
             .map((group, boat) => group.map(({ type: _, ...member }, seat): SeatedMember => ({ ...member, position: calcPosition(boat, seat) })))
             .reduce((members, group) => [...members, ...group], [])
         ),
-        null, null, null, // 最后来几个空数据占位
+        ...new Array(1 + turn).fill(null), // 最后来几个空数据占位
     ])
         .pipe(zip(interval(freq * 1000), member => member))
         .subscribe(member => {
@@ -64,7 +64,7 @@ const shootPathFit = (freq: number, turn: number, swing: number) => {
         [member, ...history.slice(0, turn)].map(
             (member, index): MovingMember => {
                 if (member == null) return null;
-                const { name, position } = member;            // 目标坐标
+                const { name, position } = member;      // 目标坐标
                 const progress = index / turn;          // 当前进度
                 const origin = shootOrigin(position);   // 起点坐标
                 const even = index % 2 === 0;           // 奇偶次数
@@ -81,8 +81,8 @@ const shootPathFit = (freq: number, turn: number, swing: number) => {
                 return {
                     name: index < turn ? name : null,
                     position: [...position.slice(0, 2), 1, velocityAngle(velocity)],
-                    vertex: [...vertex, progress, (even ? 1 : -1) ? 0 : 1],
-                    bezier: [...bezier, 1 / framesTotal, (even ? -1 : 1) / frames],
+                    vertex: [...vertex, progress, even ? -1 : 1],
+                    bezier: [...bezier, 1 / framesTotal, (even ? 2 : -2) / frames],
                     gravity,
                 };
             }
