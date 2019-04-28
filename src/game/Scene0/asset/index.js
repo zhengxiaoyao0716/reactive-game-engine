@@ -1,4 +1,4 @@
-import { $Types } from '../../../util/@types';
+import { $Types } from '../../../core/@types';
 import { UseResourceLoader } from '../../../pixi';
 
 export const images = {

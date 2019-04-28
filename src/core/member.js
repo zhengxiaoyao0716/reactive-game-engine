@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { TreeSet, compareExtract, shuffle } from '../util/collection';
+import { TreeSet, compareExtract, shuffle } from '../core/collection';
 
 export type Member = { name: string, gender: 'male' | 'female', type: any };
 export const members: Readonly<Member[][]> = [

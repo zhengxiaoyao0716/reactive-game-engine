@@ -2,7 +2,7 @@ import React, {  useMemo, useEffect, useCallback } from 'react';
 import { useResource, Sprite, Gradient } from '../../pixi';
 import { Progress } from '../../pixi/Progress';
 import Loading from '../Loading';
-import { $Types } from '../../util/@types';
+import { $Types } from '../../core/@types';
 import { useObservable, pick } from '../../util/rxjs';
 import useCore from '../../util/useCore';
 import asset, { images } from './asset';

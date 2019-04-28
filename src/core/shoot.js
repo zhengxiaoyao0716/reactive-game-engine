@@ -1,6 +1,6 @@
 import { Member, divideGroup } from './member';
 import { Subject, from, interval } from 'rxjs';
-import { shuffle } from '../util/collection';
+import { shuffle } from '../core/collection';
 import { zip, delay, scan } from 'rxjs/operators';
 
 export const boats: { position: [number, number] }[] = new Array(8).fill().map((_, index) => ({
@@ -82,7 +82,7 @@ const shootPathFit = (freq: number, turn: number, swing: number) => {
                     name: index < turn ? name : null,
                     position: [...position.slice(0, 2), 1, velocityAngle(velocity)],
                     vertex: [...vertex, progress, (even ? 1 : -1) ? 0 : 1],
-                    bezier: [...bezier, 1 / framesTotal, (even ? 1 : -1) / frames],
+                    bezier: [...bezier, 1 / framesTotal, (even ? -1 : 1) / frames],
                     gravity,
                 };
             }
