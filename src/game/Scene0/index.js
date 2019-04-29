@@ -46,8 +46,8 @@ const Scene0 = () => {
                 {seated.filter(member => member != null).map(({ name, position: [left, top] }) => (
                     <span className="member" key={name} style={{ left, top }}>{name}</span>
                 ))}
-                {moving.filter(member => member != null).map(({ name, position, vertex, bezier, gravity }) => (
-                    <MovingMember key={name} name={name} angle={position[3]} position={vertex} velocity={bezier} gravity={gravity} />
+                {moving.filter(member => member != null).map(({ name, vertex, velocity }) => (
+                    <MovingMember key={name} name={name} vertex={vertex} velocity={velocity} />
                 ))}
             </UI>
         </Progress>
@@ -57,17 +57,19 @@ export default Scene0;
 
 interface MovingMemberProps {
     name: string,
-    angle: number,
-    position: [number, number, number, number],
-    velocity: [number, number, number, number],
-    gravity: [number, number],
+    vertex: [[number, number], number, number], // [[x, y], angle, progress]
+    velocity: [number, number, number],         // [线速度, 角速度, 匀速度]
 }
 
-const MovingMember = ({ name, angle, position, velocity, gravity }: MovingMemberProps) => (
-    <Gradient {...Gradient.Velocity({ position, velocity, gravity })}>{({ position: [left, top, progress, rotate] }) => (
-        <div className="member" style={{ left, top, transform: `scale(${1 + (1 - progress) * 2})` }}>
-            <img src={images.plane} alt={name} style={{ transform: `rotate(${angle + rotate / 20}turn)` }} />
-            {name && <span>{name}</span>}
-        </div>
-    )}</Gradient>
+const MovingMember = ({ name, vertex: [[x, y], angle, progress], velocity: [ν, ω, v] }: MovingMemberProps) => (
+    <Gradient {...Gradient.Velocity([[0, progress], [ω, v]])}>{([[offset, progress]]) => {
+        const left = x + ν * (Math.cos(angle) * Math.sin(offset) + Math.sin(angle) * Math.cos(offset) - Math.sin(angle));
+        const top = y + ν * (Math.sin(angle) * Math.sin(offset) - Math.cos(angle) * Math.cos(offset) + Math.cos(angle));
+        return (
+            <div className="member" style={{ left, top, transform: `scale(${1 + (1 - progress) * 2})` }}>
+                <img src={images.plane} alt={name} style={{ transform: `rotate(${angle + offset}rad)` }} />
+                {name && <span>{name}</span>}
+            </div>
+        );
+    }}</Gradient>
 );

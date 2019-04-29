@@ -22,10 +22,8 @@ export type SeatedMember = {
 } & Member;
 
 export type MovingMember = {
-    position: [number, number, number, number], // [x, y, 1, angle]
-    vertex: [number, number, number, number],   // [x, y, progress, rotate]
-    bezier: [number, number, number, number],   // [vx, vy, vp, vr]
-    gravity: [number, number],
+    vertex: [[number, number], number, number], // [[x, y], angle, progress]
+    velocity: [number, number, number],         // [线速度, 角速度, 匀速度]
 } & Member; // { position: [x, y, scale] }
 
 /**
@@ -33,13 +31,13 @@ export type MovingMember = {
  * @param {ReturnType<typeof divideGroup>} groups 队员分组.
  * @param {number} freq 发射频率，多少秒发射一个.
  * @param {number} turn 转向次数，队员路径顶点数.
- * @param {number} swing 摇摆力度
+ * @param {number} bend 偏转角度
  */
-export const shootMember = (groups: ReturnType<typeof divideGroup>, freq = 1.5, turn = 3, swing = 1) => {
+export const shootMember = (groups: ReturnType<typeof divideGroup>, freq = 1.5, turn = 3, bend = 1 / 3) => {
     const seated: Subject<SeatedMember> = new Subject()
         .pipe(delay(turn * freq * 1000));
     const moving: Subject<MovingMember[]> = new Subject()
-        .pipe(scan(shootPathFit(freq, turn, swing), []));
+        .pipe(scan(shootPathFit(freq, turn, bend), []));
 
     const subscription = from([
         ...shuffle(groups
@@ -57,7 +55,7 @@ export const shootMember = (groups: ReturnType<typeof divideGroup>, freq = 1.5, 
     return { seated, moving, subscription };
 };
 
-const shootPathFit = (freq: number, turn: number, swing: number) => {
+const shootPathFit = (freq: number, turn: number, bend: number) => {
     const frames = 60 * freq;
     const framesTotal = frames * turn;
     return (history: MovingMember[], member: SeatedMember) => (
@@ -65,25 +63,28 @@ const shootPathFit = (freq: number, turn: number, swing: number) => {
             (member, index): MovingMember => {
                 if (member == null) return null;
                 const { name, position } = member;      // 目标坐标
-                const progress = index / turn;          // 当前进度
                 const origin = shootOrigin(position);   // 起点坐标
                 const even = index % 2 === 0;           // 奇偶次数
-                const vector = [[position[0], origin[0]], [position[1], origin[1]]];
+                const points = [[position[0], origin[0]], [position[1], origin[1]]];
+                const vector = points.map(([pos, org]) => pos - org);   // 方向
+                const offset = (even ? 1 : -1) * Math.PI * bend;        // 偏转
+                const offsetHalf = offset / 2;                          // 半偏转
+
                 // 计算折点
-                const vertex = vector.map(([pos, org]) => org + progress * (pos - org));
+                const progress = index / turn;                          // 当前进度
+                const angle = vectorAngle(vector) - offsetHalf;         // 角度
+                const point = points.map(([pos, org]) => org + progress * (pos - org));
+
                 // 计算速度
-                const velocity = vector.map(([pos, vel]) => (pos - vel) / framesTotal);
-                // 计算引力
-                const gravity = [-velocity[1], velocity[0]].map(g => even ? g : -g).map(g => swing / 60 * (turn - index) * g);
-                // 贝塞尔轴
-                const bezier = gravity.map(g => -0.5 * g * frames).map((normal, index) => normal + velocity[index]);
+                const ω = offset / frames;                                                                      // 角速度
+                const Δ = Math.sqrt(vector.map(vec => Math.pow(vec, 2)).reduce((xp, yp) => xp + yp)) / turn;    // 路程
+                const ν = Δ / Math.sin(offsetHalf) / 2;                                                         // 线速度 // 准确的说是线速度与角速度之比
 
                 return {
                     name: index < turn ? name : null,
-                    position: [...position.slice(0, 2), 1, velocityAngle(velocity)],
-                    vertex: [...vertex, progress, even ? -1 : 1],
-                    bezier: [...bezier, 1 / framesTotal, (even ? 2 : -2) / frames],
-                    gravity,
+                    position,
+                    vertex: [point, angle, progress],
+                    velocity: [ν, ω, 1 / framesTotal],
                 };
             }
         )
@@ -105,7 +106,7 @@ const shootOrigin = (destination: [number, number], width = 1920, height = 1080)
     );
 };
 
-const velocityAngle = (velocity: [number, number]) => {
-    const angle = Math.atan(velocity[1] / velocity[0]) / (2 * Math.PI);
-    return (angle < 0 ? 0.25 - angle : angle) + (velocity[1] < 0 ? 0.5 : 0);
+const vectorAngle = (vector: [number, number]) => {
+    const angle = Math.atan(vector[1] / vector[0]);
+    return (angle < 0 ? Math.PI + angle : angle) + (vector[1] < 0 ? Math.PI : 0);
 };
