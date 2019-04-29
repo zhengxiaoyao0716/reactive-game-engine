@@ -17,10 +17,11 @@ const Scene0 = () => {
     const textures = useMemo(() => playerTextures(resource), [resource]);
 
     const state = useObservable(useMemo(() => core.pipe(pick('scene0')).pipe(pick('player')), []));
+    const { position = [], velocity = [], gravity = [] }: typeof state = state || {};
 
     return (
         <Progress completed={resource} indicator={Loading}>
-            <Gradient {...Gradient.Velocity(state)}>{({ position: [x, y], velocity: [vx, vy] }) =>
+            <Gradient {...Gradient.Velocity([position, velocity, gravity])}>{([[x, y], [vx, vy]]) =>
                 <MovableSprite {...MovableSprite.UDLR} textures={textures} position={{ x, y }} velocity={{ vx, vy }} animationSpeed={0.1} />
             }</Gradient>
         </Progress>
