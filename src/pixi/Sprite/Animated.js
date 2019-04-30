@@ -1,9 +1,9 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode } from 'react';
 import { Texture, AnimatedSpriteTextureTimeObject, extras } from 'pixi.js';
-import { useCloseable } from '../useCloseable';
 import { useContainer } from '..';
 import { $Props } from '../../core/@types';
 import { SpriteContext } from '.';
+import { useCloseableImmedite, useUpdate } from '../hook';
 
 export interface AnimatedSpriteProps {
     children?: ReactNode;
@@ -18,7 +18,7 @@ export interface AnimatedSpriteProps {
 
 export const AnimatedSprite = ({ children, textures, autoUpdate, position, scale, playing = true, loop = true, animationSpeed = 1 }: AnimatedSpriteProps) => {
     const container = useContainer();
-    const sprite = useCloseable(() => {
+    const sprite = useCloseableImmedite(() => {
         const sprite = new extras.AnimatedSprite(textures, autoUpdate);
         container.addChild(sprite);
         return sprite;
@@ -27,8 +27,7 @@ export const AnimatedSprite = ({ children, textures, autoUpdate, position, scale
         sprite.destroy();
     });
 
-    useEffect(() => {
-        if (sprite == null) return;
+    useUpdate(() => {
         if (textures !== sprite.textures) sprite.textures = textures;
         if (position && position !== sprite.position) sprite.position.set(position.x, position.y);
         if (playing !== sprite.playing) playing ? sprite.play() : sprite.stop();
@@ -38,7 +37,7 @@ export const AnimatedSprite = ({ children, textures, autoUpdate, position, scale
         }
         if (loop !== sprite.loop) sprite.loop = loop;
         if (animationSpeed !== sprite.animationSpeed) sprite.animationSpeed = animationSpeed;
-    }, [sprite, textures, position, playing, loop, animationSpeed]);
+    }, [textures, position, playing, loop, animationSpeed]);
 
-    return sprite && <SpriteContext.Provider value={sprite}>{children}</SpriteContext.Provider>;
+    return <SpriteContext.Provider value={sprite}>{children}</SpriteContext.Provider>;
 };

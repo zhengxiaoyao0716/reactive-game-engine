@@ -1,6 +1,6 @@
 import React, { ReactNode, createContext, Context, useContext, useRef, useMemo } from 'react';
 import { RendererOptions, CanvasRenderer, WebGLRenderer, autoDetectRenderer } from 'pixi.js';
-import { useCloseable } from './useCloseable';
+import { useCloseable } from './hook';
 import { $Props } from '../core/@types';
 
 interface Props {

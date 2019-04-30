@@ -1,6 +1,6 @@
-import React, { Context, createContext, useContext, useEffect, useDebugValue } from 'react';
+import React, { Context, createContext, useContext, useDebugValue } from 'react';
 import { ticker } from 'pixi.js';
-import { useCloseable } from './useCloseable';
+import { useCloseableImmedite, useUpdate } from './hook';
 
 type PIXITicker = ticker.Ticker;
 const PIXITicker = ticker.Ticker; // eslint-disable-line no-redeclare
@@ -17,16 +17,16 @@ export const TickerContext: Context<PIXITicker> = createContext(null);
 TickerContext.displayName = 'Ticker';
 
 export const Ticker = ({ children, running = true, speed = 1, minFPS = 10 }: Props) => {
-    const ticker = useCloseable(() => new PIXITicker());
+    const ticker = useCloseableImmedite(() => new PIXITicker());
 
-    useEffect(() => {
+    useUpdate(() => {
         if (ticker == null) return;
         if (running !== ticker.started) running ? ticker.start() : ticker.stop();
         if (speed !== ticker.speed) ticker.speed = speed;
         if (minFPS !== ticker.minFPS) ticker.minFPS = minFPS;
-    }, [ticker, running, speed, minFPS]);
+    }, [running, speed, minFPS]);
 
-    return ticker && <TickerContext.Provider value={ticker}>{children}</TickerContext.Provider>;
+    return <TickerContext.Provider value={ticker}>{children}</TickerContext.Provider>;
 };
 
 export const useTicker = () => {

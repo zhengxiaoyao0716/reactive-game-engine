@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useCallback } from 'react';
 import { Container as PIXIContainer } from 'pixi.js';
 import { useRenderer, useTicker } from '.';
 import { ContainerContext, useContainer } from './Container';
-import { useCloseable } from './useCloseable';
+import { useCloseableImmedite } from './hook';
 
 interface Props {
     children?: ReactNode;
@@ -11,8 +11,8 @@ interface Props {
 export const StageContext = ContainerContext;
 
 export const Stage = ({ children }: Props) => {
-    const container = useCloseable(() => new PIXIContainer());
-    return container && <StageContext.Provider value={container}>{children}</StageContext.Provider>;
+    const container = useCloseableImmedite(() => new PIXIContainer());
+    return <StageContext.Provider value={container}>{children}</StageContext.Provider>;
 };
 
 export const useStage = useContainer;
