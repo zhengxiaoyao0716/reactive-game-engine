@@ -1,4 +1,4 @@
-import { useState, useEffect, DependencyList } from 'react';
+import { useState, useEffect, useMemo, DependencyList } from 'react';
 
 interface Closeable {
     destroy?: () => void;
@@ -20,4 +20,19 @@ export function useCloseable<T>(
         return () => promise.then(close);
     }, deps);
     return state;
+};
+
+export function useCloseableImmedite<T>(
+    supplier: () => T,
+    close?: (value: T) => void = defaultClose,
+    deps?: DependencyList = [],
+): T | null {
+    const state = useMemo(supplier, []);
+    useEffect(() => () => close(state), deps);
+    return state;
+};
+
+export const useUpdate: typeof useEffect = (update, deps) => {
+    useMemo(update, []);
+    useEffect(update, deps);
 };

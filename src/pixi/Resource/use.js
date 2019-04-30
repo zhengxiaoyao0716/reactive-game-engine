@@ -3,7 +3,7 @@ import { useLoader } from '..';
 import { loaders, utils } from 'pixi.js';
 import { makeResource } from './make';
 import { UseResourceOptions } from './use';
-import { useCloseable } from '../useCloseable';
+import { useCloseable } from '../hook';
 
 export function useResource<T>(
     options: T & UseResourceOptions,
