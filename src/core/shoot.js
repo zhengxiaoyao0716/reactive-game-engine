@@ -3,12 +3,12 @@ import { Subject, from, interval } from 'rxjs';
 import { shuffle } from '../core/collection';
 import { zip, delay, scan } from 'rxjs/operators';
 
-export const boats: { position: [number, number] }[] = new Array(8).fill().map((_, index) => ({
-    position: [30, 27.5 + index * 130],
+export const boats: { position: [number, number] }[] = new Array(7).fill().map((_, index) => ({
+    position: [10, 16 + (152 - 115) / 2 + index * 152],
 }));
 
-const seats: { position: [number, number] }[] = new Array(20).fill().map((_, index) => ({
-    position: [150 + 140 * (index % 10), (index / 10 | 0) === 0 ? 10 : 60],
+const seats: { position: [number, number] }[] = new Array(22).fill().map((_, index) => ({
+    position: [135 + 137 * (index % 11), (index / 11 | 0) === 0 ? 6 : 64],
 }));
 
 export const calcPosition = (boat: number, seat: number) => {

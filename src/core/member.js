@@ -6,21 +6,21 @@ export type Member = { name: string, gender: 'male' | 'female', type: any };
 export const members: Readonly<Member[][]> = [
     [
         ...new Array(60).fill().map((_, index) => ({ name: `其它${`0${index}`.slice(-2)}`, gender: 'male' })),
-        ...new Array(30).fill().map((_, index) => ({ name: `其它${60 + index}`, gender: 'female' })),
+        ...new Array(28).fill().map((_, index) => ({ name: `其它${60 + index}`, gender: 'female' })),
     ].map(member => ({ ...member, type: '其它' })),
     [
         ...new Array(30).fill().map((_, index) => ({ name: `美术${`0${index}`.slice(-2)}`, gender: 'male' })),
-        ...new Array(30).fill().map((_, index) => ({ name: `美术${30 + index}`, gender: 'female' })),
+        ...new Array(28).fill().map((_, index) => ({ name: `美术${30 + index}`, gender: 'female' })),
     ].map(member => ({ ...member, type: '美术' })),
     [
-        ...new Array(8).fill().map((_, index) => ({ name: `特殊0${index}`, gender: 'male' })),
-        ...new Array(2).fill().map((_, index) => ({ name: `特殊${`0${8 + index}`.slice(-2)}`, gender: 'female' })),
+        ...new Array(6).fill().map((_, index) => ({ name: `特殊0${index}`, gender: 'male' })),
+        ...new Array(2).fill().map((_, index) => ({ name: `特殊${`0${6 + index}`.slice(-2)}`, gender: 'female' })),
     ].map(member => ({ ...member, type: '特殊' })),
 ];
 
 const femaleNum = (group: Member[]) => group.reduce((num, { gender }) => gender === 'female' ? num + 1 : num, 0);
 
-export const divideGroup = (members: Readonly<Member[][]>, size: number = 8) => {
+export const divideGroup = (members: Readonly<Member[][]>, size: number = 7) => {
     const groups = members.map(members => shuffle(members))
         .reduce((result, members) => [...result, ...members], [])
         .reduce(
