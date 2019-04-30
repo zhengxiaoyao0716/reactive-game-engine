@@ -1,20 +1,14 @@
-import React, { useMemo, useEffect, useCallback } from 'react';
-import { useResource, Sprite, Gradient } from '../../pixi';
-import { Progress } from '../../pixi/Progress';
-import Loading from '../Loading';
-import { $Types } from '../../core/@types';
+import React, { useMemo, useEffect } from 'react';
+import { Gradient } from '../../pixi';
 import { useObservable, pick } from '../../util/rxjs';
 import useCore from '../../util/useCore';
-import asset, { images } from './asset';
+import { images } from './asset';
 import { scan, map } from 'rxjs/operators';
 import { UI } from '../../pixi/UI';
 import './index.css';
 
 const Scene0 = () => {
     const core = useCore();
-
-    const resource = useResource(asset);
-    const texture: $Types.applyThenIndex<typeof resource, 'texture'> = useCallback(name => resource && resource(name).texture, [resource]);
 
     const seated = useObservable(useMemo(() =>
         /* subject source */core
@@ -23,9 +17,14 @@ const Scene0 = () => {
         /* initial value */[]
     ), []);
     const moving = useObservable(useMemo(() => core.pipe(pick('scene0'), pick('members'), pick('moving')), []), []);
-    const boats = useObservable(useMemo(() => core.pipe(pick('scene0'), pick('boats')), []), []);
+    const boats = useObservable(useMemo(() =>
+        /* subject source */core
+            .pipe(pick('scene0'), pick('boat'))
+            .pipe(map(({ name, ...boat }) => ({ [name]: boat })), scan((history, boats) => ({ ...history, ...boats }))),
+            /* initial value */{}
+    ), []);
 
-    // useMemo(() => console.log('moving', moving), [moving]);
+    // useMemo(() => console.log('boats', boats), [boats]);
 
     useEffect(() => {
         core.start('scene0');
@@ -33,27 +32,44 @@ const Scene0 = () => {
     }, []);
 
     return (
-        <Progress completed={resource} indicator={Loading}>
-            <UI className="Scene0" scaleMode={true}>
-                <Sprite texture={texture('bg')} />
-                <>
-                    {boats.map(({ position: [x, y] }, index) => (
-                        <Sprite key={index} texture={texture(index % 2 ? 'boat' : 'boat')} position={{ x, y }}>
-                            <span className="boatName" style={{ top: y }}>{`${1 + index}队`}</span>
-                        </Sprite>
-                    ))}
-                </>
+        <UI className="Scene0" scaleMode={true}>
+            <img src={images.bg} alt="background" />
+            <div className="boats">
+                {Object.entries(boats).map(([name, { position, velocity }]) => (
+                    <MovingBoat key={name} name={name} position={position} velocity={velocity} />
+                ))}
+            </div>
+            <div className="members">
                 {seated.filter(member => member != null).map(({ name, position: [left, top] }) => (
                     <span className="member" key={name} style={{ left, top }}>{name}</span>
                 ))}
+            </div>
+            <div className="members">
                 {moving.filter(member => member != null).map(({ name, vertex, velocity }) => (
                     <MovingMember key={name} name={name} vertex={vertex} velocity={velocity} />
                 ))}
-            </UI>
-        </Progress>
+            </div>
+        </UI>
     );
 };
 export default Scene0;
+
+interface MovingBoatProps {
+    name: string,
+    position: [number, number],
+    velocity: [number],
+}
+
+const MovingBoat = ({ name, position: [x, y], velocity: [v] }: MovingBoatProps) => {
+    return (
+        <Gradient {...Gradient.Velocity([[x, y], [v]])} >{([[left, top]]) => (
+            <div style={{ left, top }}>
+                <img src={images.boat} alt={name} />
+                <span>{name}</span>
+            </div>
+        )}</Gradient>
+    );
+};
 
 interface MovingMemberProps {
     name: string,
@@ -66,7 +82,7 @@ const MovingMember = ({ name, vertex: [[x, y], angle, progress], velocity: [ν, 
         const left = x + ν * (Math.cos(angle) * Math.sin(offset) + Math.sin(angle) * Math.cos(offset) - Math.sin(angle));
         const top = y + ν * (Math.sin(angle) * Math.sin(offset) - Math.cos(angle) * Math.cos(offset) + Math.cos(angle));
         return (
-            <div className="member" style={{ left, top, transform: `scale(${1 + (1 - progress) * 2})` }}>
+            <div style={{ left, top, transform: `scale(${1 + (1 - progress) * 2})` }}>
                 <img src={images.plane} alt={name} style={{ transform: `rotate(${angle + offset}rad)` }} />
                 {name && <span>{name}</span>}
             </div>

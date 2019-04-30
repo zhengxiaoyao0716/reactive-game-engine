@@ -1,13 +1,17 @@
 import { Member, divideGroup } from './member';
 import { Subject, from, interval } from 'rxjs';
 import { shuffle } from '../core/collection';
-import { zip, delay, scan } from 'rxjs/operators';
+import { zip, delay, scan, mergeMap, take, startWith, map } from 'rxjs/operators';
+import { $Types } from './@types';
 
-export const boats: { position: [number, number] }[] = new Array(7).fill().map((_, index) => ({
-    position: [10, 16 + (152 - 115) / 2 + index * 152],
+const boats = new Array(7).fill().map((_, index) => ({
+    name: `${index + 1}队`,
+    position: [10, 8 + (152 - 115) / 2 + index * 152],
+    velocity: [0],
 }));
+export type Boat = $Types.element<typeof boats>;
 
-const seats: { position: [number, number] }[] = new Array(22).fill().map((_, index) => ({
+const seats = new Array(22).fill().map((_, index) => ({
     position: [135 + 137 * (index % 11), (index / 11 | 0) === 0 ? 6 : 64],
 }));
 
@@ -33,7 +37,7 @@ export type MovingMember = {
  * @param {number} freq 发射频率，多少秒发射一个.
  * @param {number} turn 转向次数，队员路径顶点数.
  */
-export const shootMember = (groups: ReturnType<typeof divideGroup>, freq = 1.2, turn = 3) => {
+export default (groups: ReturnType<typeof divideGroup>, freq = 1.2, turn = 3) => {
     const seated: Subject<SeatedMember> = new Subject()
         .pipe(delay(turn * freq * 1000));
     const moving: Subject<MovingMember[]> = new Subject()
@@ -52,7 +56,22 @@ export const shootMember = (groups: ReturnType<typeof divideGroup>, freq = 1.2, 
             moving.next(member);
         });
 
-    return { seated, moving, subscription };
+    const boatsShooter = from(shuffle(boats).slice(0))
+        .pipe(mergeMap(boat => {
+            const distance = 1800 - Math.random() * 500;
+            const time = turn / freq;
+            const shoot = {
+                ...boat,
+                position: [boat.position[0] - distance, boat.position[1]],
+                velocity: [distance / time / 60, 0],
+            };
+            return interval(time * 1000)
+                .pipe(take(1))
+                .pipe(map(() => boat))
+                .pipe(startWith(shoot));
+        }));
+
+    return { seated, moving, boats: boatsShooter, subscription };
 };
 
 const shootPathFit = (freq: number, turn: number) => {

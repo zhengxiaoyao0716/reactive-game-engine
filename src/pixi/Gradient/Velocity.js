@@ -20,7 +20,8 @@ const velocityGradientFn = (): GradientFn<State, State> => (
 );
 
 export default (state: State) => {
-    const pointsFn: PointsFn<State> = useCallback(() => [state], [state]);
-    const gradientFn = useCallback(velocityGradientFn(), [state]);
+    const deps = state.map(vector => vector.join(','));
+    const pointsFn: PointsFn<State> = useCallback(() => [state], deps);
+    const gradientFn = useCallback(velocityGradientFn(), deps);
     return { pointsFn, gradientFn };
 };

@@ -1,8 +1,11 @@
-.Scene0 .boatName {
+.Scene0 .boats>* {
+    position: absolute;
+}
+.Scene0 .boats>div>span {
     position: absolute;
     white-space: nowrap;
     color: #fff;
-    right: 230px;
+    right: 130px;
     height: 110px;
     line-height: 110px;
     font-size: 36px;
@@ -10,7 +13,7 @@
     text-shadow: 0px -3px 3px #1d3e12, 0px 3px 3px #1d3e12, -3px 0px 3px #1d3e12, 3px 0px 3px #1d3e12;
 }
 
-.Scene0 .member {
+.Scene0>.members>* {
     position: absolute;
     white-space: nowrap;
     color: #fff;
@@ -19,7 +22,7 @@
     -webkit-text-stroke: 1px #000;
     text-shadow: 0px -3px 3px #000, 0px 3px 3px #000, -3px 0px 3px #000, 3px 0px 3px #000;
 }
-.Scene0 .member>img {
+.Scene0>.members>div>img {
     position: absolute;
     max-width: 150px;
     left: -20px;

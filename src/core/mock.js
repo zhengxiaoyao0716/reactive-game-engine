@@ -1,7 +1,7 @@
 import { $Types } from './@types';
 import { subject } from '.';
 import { members, divideGroup } from './member';
-import { SeatedMember, MovingMember, boats, shootMember } from './shoot';
+import shoot, { SeatedMember, MovingMember, Boat } from './shoot';
 
 export type Data = {
     scene0: {
@@ -9,7 +9,7 @@ export type Data = {
             seated: SeatedMember,
             moving: MovingMember[],
         },
-        boats: typeof boats,
+        boat: Boat,
     },
 };
 type Scenes = $Types.key<Data>;
@@ -23,13 +23,15 @@ export const mock = {
     start(scene: Scenes) {
         state.scene = scene;
         state.running = true;
-        subject.next({ scene0: { boats } });
+
+        // subject.next({ scene0: { boats } });
         const groups = divideGroup(members);
-        const { seated, moving, ...shoot } = shootMember(groups);
+        const { seated, moving, boats, ...shooter } = shoot(groups);
         const subscriptions = [
-            shoot.subscription,
+            shooter.subscription,
             seated.subscribe(seated => subject.next({ scene0: { members: { seated } } })),
             moving.subscribe(moving => subject.next({ scene0: { members: { moving } } })),
+            boats.subscribe(boat => subject.next({ scene0: { boat } })),
         ];
         this.pause = () => {
             this.pause = () => { };
