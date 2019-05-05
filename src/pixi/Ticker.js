@@ -17,7 +17,13 @@ export const TickerContext: Context<PIXITicker> = createContext(null);
 TickerContext.displayName = 'Ticker';
 
 export const Ticker = ({ children, running = true, speed = 1, minFPS = 10 }: Props) => {
-    const ticker = useCloseableImmedite(() => new PIXITicker());
+    const ticker = useCloseableImmedite(() => {
+        const ticker = new PIXITicker();
+        // patch for [#5653](https://github.com/pixijs/pixi.js/issues/5653)
+        const remove = ticker.remove.bind(ticker);
+        ticker.remove = (fn: (deltaTime: number) => void, context?: any, priority?: number) => ticker._head && remove(fn, context, priority);
+        return ticker;
+    });
 
     useUpdate(() => {
         if (ticker == null) return;
