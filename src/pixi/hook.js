@@ -6,7 +6,7 @@ interface Closeable {
     close?: () => void;
 }
 
-const defaultClose = (value: Closeable) => (value.destroy || value.remove || value.close).call(value);
+const defaultClose = (value: Closeable) => (value.close || value.destroy || value.remove).call(value);
 
 export function useCloseable<T>(
     supplier: () => T | Promise<T>,
