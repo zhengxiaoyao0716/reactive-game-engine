@@ -31,7 +31,7 @@ export const UI = ({ id, className = '', children, scaleMode }: Props) => {
             .pipe(map(_event => styleOf(renderer, scaleMode)))
             .pipe(debounceTime(100))
         , []);
-    const style = useObservable(styleEvent, styleOf(renderer, scaleMode));
+    const style = useObservable(styleEvent, useMemo(() => styleOf(renderer, scaleMode), []));
     return (
         <div id={id} className={`${className && `${className} `}PIXI UI`} style={style}>{children}</div>
     );
