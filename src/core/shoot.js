@@ -12,7 +12,7 @@ const boats = new Array(7).fill().map((_, index) => ({
 export type Boat = $Types.element<typeof boats>;
 
 const seats = new Array(22).fill().map((_, index) => ({
-    position: [135 + 137 * (index % 11), (index / 11 | 0) === 0 ? 6 : 64],
+    position: [133 + 137 * (index % 11), (index / 11 | 0) === 0 ? 6 : 64],
 }));
 
 export const calcPosition = (boat: number, seat: number) => {
@@ -58,8 +58,8 @@ export default (groups: ReturnType<typeof divideGroup>, freq = 1.2, turn = 3) =>
 
     const boatsShooter = from(shuffle(boats).slice(0))
         .pipe(mergeMap(boat => {
-            const distance = 1800 - Math.random() * 500;
-            const time = turn / freq;
+            const distance = 800 - Math.random() * 500;
+            const time = turn - 1.5;
             const shoot = {
                 ...boat,
                 position: [boat.position[0] - distance, boat.position[1]],

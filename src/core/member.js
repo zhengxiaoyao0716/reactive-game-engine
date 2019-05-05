@@ -3,20 +3,29 @@
 import { TreeSet, compareExtract, shuffle } from '../core/collection';
 
 export type Member = { name: string, gender: 'male' | 'female', type: any };
-export const members: Readonly<Member[][]> = [
-    [
-        ...new Array(60).fill().map((_, index) => ({ name: `其它${`0${index}`.slice(-2)}`, gender: 'male' })),
-        ...new Array(28).fill().map((_, index) => ({ name: `其它${60 + index}`, gender: 'female' })),
-    ].map(member => ({ ...member, type: '其它' })),
-    [
-        ...new Array(30).fill().map((_, index) => ({ name: `美术${`0${index}`.slice(-2)}`, gender: 'male' })),
-        ...new Array(28).fill().map((_, index) => ({ name: `美术${30 + index}`, gender: 'female' })),
-    ].map(member => ({ ...member, type: '美术' })),
-    [
-        ...new Array(6).fill().map((_, index) => ({ name: `特殊0${index}`, gender: 'male' })),
-        ...new Array(2).fill().map((_, index) => ({ name: `特殊${`0${6 + index}`.slice(-2)}`, gender: 'female' })),
-    ].map(member => ({ ...member, type: '特殊' })),
-];
+export const members: Promise<Member[][]> = (
+    typeof window === 'undefined'
+        ? async () => {
+            const fs = require('fs');
+            const dir = fs.existsSync('./public') ? 'public' : '.';
+            const text = fs.readFileSync(`${dir}/config.SECRET.json`).toString();
+            return JSON.parse(text);
+        }
+        : async () => {
+            const resp = await fetch('/config.SECRET.json');
+            return await resp.json();
+        }
+)()
+    .then(
+        (json: { [type: string]: { [gender: string]: string[] } }) => Object.entries(json)
+            .reduce((dict, [type, members]) => ({
+                ...dict,
+                [type]: ['female', 'male']
+                    .map(gender => members[gender].filter(name => !name.startsWith('//')).map(name => ({ name, gender, type })))
+                    .reduce((female, male) => [...female, ...male]),
+            }), [])
+    )
+    .then(({ 其它, 美术, 特殊 }) => [其它, 美术, 特殊]);
 
 const femaleNum = (group: Member[]) => group.reduce((num, { gender }) => gender === 'female' ? num + 1 : num, 0);
 

@@ -24,20 +24,20 @@ export const mock = {
         state.scene = scene;
         state.running = true;
 
-        // subject.next({ scene0: { boats } });
-        const groups = divideGroup(members);
-        const { seated, moving, boats, ...shooter } = shoot(groups);
-        const subscriptions = [
-            shooter.subscription,
-            seated.subscribe(seated => subject.next({ scene0: { members: { seated } } })),
-            moving.subscribe(moving => subject.next({ scene0: { members: { moving } } })),
-            boats.subscribe(boat => subject.next({ scene0: { boat } })),
-        ];
-        this.pause = () => {
-            this.pause = () => { };
-            state.running = false;
-            subscriptions.forEach(sub => sub.unsubscribe());
-        };
+        members
+            .then(divideGroup)
+            .then(shoot)
+            .then(({ seated, moving, boats, ...shooter }) => [
+                shooter.subscription,
+                seated.subscribe(seated => subject.next({ scene0: { members: { seated } } })),
+                moving.subscribe(moving => subject.next({ scene0: { members: { moving } } })),
+                boats.subscribe(boat => subject.next({ scene0: { boat } })),
+            ])
+            .then(subscriptions => this.pause = () => {
+                this.pause = () => { };
+                state.running = false;
+                subscriptions.forEach(sub => sub.unsubscribe());
+            });
     },
     pause() { },
 };
