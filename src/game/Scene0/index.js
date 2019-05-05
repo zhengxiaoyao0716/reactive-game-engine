@@ -41,7 +41,7 @@ const Scene0 = () => {
             </div>
             <div className="members">
                 {seated.filter(member => member != null).map(({ name, position: [left, top] }) => (
-                    <span className="member" key={name} style={{ left, top }}>{name}</span>
+                    <span className="member" key={name} style={{ left, top }}>{nameAlign(name)}</span>
                 ))}
             </div>
             <div className="members">
@@ -84,8 +84,10 @@ const MovingMember = ({ name, vertex: [[x, y], angle, progress], velocity: [ν, 
         return (
             <div style={{ left, top, transform: `scale(${1 + (1 - progress) * 2})` }}>
                 <img src={images.plane} alt={name} style={{ transform: `rotate(${angle + offset}rad)` }} />
-                {name && <span>{name}</span>}
+                {name && <span>{nameAlign(name)}</span>}
             </div>
         );
     }}</Gradient>
 );
+
+const nameAlign = (name: string) => name.length === 2 ? `${name[0]}　${name[1]}` : name;

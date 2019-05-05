@@ -12,7 +12,7 @@ const boats = new Array(7).fill().map((_, index) => ({
 export type Boat = $Types.element<typeof boats>;
 
 const seats = new Array(22).fill().map((_, index) => ({
-    position: [133 + 137 * (index % 11), (index / 11 | 0) === 0 ? 6 : 64],
+    position: [137 + 137 * (index % 11), (index / 11 | 0) === 0 ? 6 : 64],
 }));
 
 export const calcPosition = (boat: number, seat: number) => {
