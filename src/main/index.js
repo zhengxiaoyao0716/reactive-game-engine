@@ -16,7 +16,7 @@ const parseArgs = (argv: string[]) => argv.reduce((args, arg, index) => {
   if (next.startsWith('-')) return { ...args, [key]: true };
   return { ...args, [key]: next };
 }, {});
-const args: { dev?: boolean } = parseArgs(process.argv);
+const args: { dev?: boolean | 'true', windowed?: boolean | 'true' } = parseArgs(process.argv);
 
 const loadPage = args.dev ? 'http://localhost:3000' : '/';
 args.dev && console.log(`launch with develop mode, load: ${loadPage}.`); // eslint-disable-line no-console
@@ -42,7 +42,12 @@ args.dev && console.log(`launch with develop mode, load: ${loadPage}.`); // esli
 
   await app.exposeFunction('args', _ => args);
   await app.exposeFunction('core', core);
-  subject.subscribe({ next: data => app.evaluate(data => window.core.subject.next(data), data) }); // pipe the data from server side to browser side.
+  subject.subscribe({ next: data => app && app.evaluate(data => window.core.subject.next(data), data) }); // pipe the data from server side to browser side.
+
+  // fullscreen
+  const window = app.mainWindow();
+  args.windowed || window.fullscreen();
+  await app.exposeFunction('requestFullscreen', window.fullscreen.bind(window));
 
   await app.load(loadPage);
 })();
