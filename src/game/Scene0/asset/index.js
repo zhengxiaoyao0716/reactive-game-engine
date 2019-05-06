@@ -1,8 +1,9 @@
 import { $Types } from '../../../core/@types';
 import { UseResourceLoader } from '../../../pixi';
+import { images as sharedImages } from '../../asset';
 
 export const images = {
-    bg: require('./bg.jpg'),
+    ...sharedImages,
     boat: require('./boat.png'),
     plane: require('./plane.png'),
 };
