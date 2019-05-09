@@ -2,7 +2,7 @@
 
 import { TreeSet, compareExtract, shuffle } from '../core/collection';
 
-export type Member = { name: string, gender: 'male' | 'female', type: any };
+export type Member = { name: string, gender: 'male' | 'female', type: '其它' | '美术' | '特殊' };
 export const members: Promise<Member[][]> = (
     typeof window === 'undefined'
         ? async () => {
@@ -21,7 +21,7 @@ export const members: Promise<Member[][]> = (
             .reduce((dict, [type, members]) => ({
                 ...dict,
                 [type]: ['female', 'male']
-                    .map(gender => members[gender].filter(name => !name.startsWith('//')).map(name => ({ name, gender, type })))
+                    .map(gender => (members[gender] || []).map(name => ({ name, gender, type })))
                     .reduce((female, male) => [...female, ...male]),
             }), [])
     )
@@ -30,7 +30,7 @@ export const members: Promise<Member[][]> = (
 const femaleNum = (group: Member[]) => group.reduce((num, { gender }) => gender === 'female' ? num + 1 : num, 0);
 
 export const divideGroup = (members: Readonly<Member[][]>, size: number = 7) => {
-    const groups = members.map(members => shuffle(members))
+    const groups = members.map(members => shuffle(members.filter(({ name }) => !name.startsWith('//'))))
         .reduce((result, members) => [...result, ...members], [])
         .reduce(
             (groups, member, index) => {

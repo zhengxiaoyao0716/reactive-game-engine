@@ -6,6 +6,7 @@ import './index.css';
 import { Renderer, Ticker, Stage } from '../pixi';
 import Home from './Home';
 import Scene0 from './Scene0';
+import Setting from './Setting';
 
 const Scenes = {
     '0': Scene0,
@@ -40,6 +41,8 @@ export default (
             <Route exact path={'/--start'} /* redirect `start` to first scene */
                 component={({ location }: RouteComponentProps) => <Redirect to={{ ...location, pathname: '/Scene/0' }} />} />
             <Route path="/Scene/:sceneId" component={Game} />
+            
+            <Route path={'/Setting'} component={Setting} />
         </>
     </Router>
 );

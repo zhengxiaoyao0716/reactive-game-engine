@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { match } from 'react-router-dom';
+import { match, Link } from 'react-router-dom';
 import { History, Location } from 'history';
 import './index.css';
 import { images } from '../asset';
@@ -24,7 +24,8 @@ const Home = ({ history, location, match }: Props) => {
     return (
         <div className="Home">
             <img src={images.bg} alt="background" />
-            <img className="button" onClick={onStart} src={images.start} alt="start" />
+            <img className="button" id="start" onClick={onStart} src={images.start} alt="start" />
+            <Link className="button" id="setting" to={{...location, pathname: '/Setting'}}>（设置）</Link>
         </div>
     );
 };
