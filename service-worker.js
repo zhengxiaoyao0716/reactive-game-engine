@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/reactive-game-engine/precache-manifest.4355735e136b39c24e4a92445ac17d73.js"
+  "/reactive-game-engine/precache-manifest.49498fa32ba8ae5bf9353cc2c6ed48f9.js"
 );
 
 workbox.clientsClaim();

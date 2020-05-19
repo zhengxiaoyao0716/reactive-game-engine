@@ -16,8 +16,8 @@ self.__precacheManifest = [
     "url": "/reactive-game-engine/static/js/runtime~main.abb4ea99.js"
   },
   {
-    "revision": "71ecf0b71a66368cfe70",
-    "url": "/reactive-game-engine/static/js/main.5a64bc14.chunk.js"
+    "revision": "bb1c2a0f103418a256bc",
+    "url": "/reactive-game-engine/static/js/main.293bf215.chunk.js"
   },
   {
     "revision": "b3c9cb2c752b3c220554",
@@ -28,11 +28,11 @@ self.__precacheManifest = [
     "url": "/reactive-game-engine/static/js/2.20a027be.chunk.js"
   },
   {
-    "revision": "71ecf0b71a66368cfe70",
+    "revision": "bb1c2a0f103418a256bc",
     "url": "/reactive-game-engine/static/css/main.4e42bd52.chunk.css"
   },
   {
-    "revision": "79afea5c00a582fde751e0b52b1e470b",
+    "revision": "2cfa1dce2a75e988f8d8fea4b476a892",
     "url": "/reactive-game-engine/index.html"
   }
 ];
