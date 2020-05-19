@@ -12,7 +12,7 @@ export const members: Promise<Member[][]> = (
             return JSON.parse(text);
         }
         : async () => {
-            const resp = await fetch('/config.SECRET.json');
+            const resp = await fetch(`${process.env.PUBLIC_URL}/config.SECRET.json`);
             return await resp.json();
         }
 )()

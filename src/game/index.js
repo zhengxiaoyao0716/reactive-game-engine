@@ -34,7 +34,7 @@ const Game = ({ match }: Props) => {
 export default (
     <Router>
         <>
-            <Route exact path={'/'} /* redirect the root page to `Home` */
+            <Route exact path={`${process.env.PUBLIC_URL}/`} /* redirect the root page to `Home` */
                 component={({ location }: RouteComponentProps) => <Redirect to={{ ...location, pathname: '/Home' }} />} />
             <Route path={'/Home'} component={Home} />
 
